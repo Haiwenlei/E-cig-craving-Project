@@ -8,4 +8,83 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+### load the data set 
+```{r}
+load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1001-Data.rda")
+load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1002-Data.rda")
+load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-3001-Data.rda")
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+wave1_adult <- da36498.1001
+wave1_youth_parent <- da36498.1002
+
+#select variables and data cleaning 
+
+chosen_variable<- wave1_adult %>%
+   select(CASEID, PERSONID, 
+R01_AC1002,
+R01_AC1003,
+R01_AC1004,
+R01_AC9050,
+R01_AE1001,
+R01_AE1002,
+R01_AE1003,
+R01_AE1008,
+R01_AE1004,
+R01_AE1022,
+R01_AE1090,
+R01_AE1099,
+R01_AE1100,
+R01R_A_AC1006,
+R01R_A_AE1006,
+R01R_A_AE1007,
+R01R_A_AE1020,
+R01R_A_AM0018,
+R01R_A_AM0030,
+R01_AN0015,
+R01_AN0015E,
+R01_AN0025,
+R01_AN0025E,
+R01_AN0215,
+R01_AN0215E,
+R01_AR0110,
+R01_AR0142,
+R01_AX0004,
+R01_AX0005,
+R01_AX0090,
+R01_AX0091,
+R01_AN0250,
+R01_AX0064_01,
+R01_AX0064_02,
+R01_AX0064_03,
+R01_AX0065,
+R01_AR0144,
+R01_AX0104,
+R01_AX0105,
+R01R_A_RACECAT3_IMP, 
+R01R_A_BMI,
+R01R_A_SEXORIENT2,
+R01R_A_RACECAT3,
+R01R_A_CUR_ESTD_ECIG,
+R01R_A_EDY_ECIG,
+R01R_A_SDY_ECIG, 
+R01R_A_P30D_ECIG,
+R01R_A_AGECAT7_IMP) %>%
+  mutate(current_established_ecig_user = if_else(R01R_A_CUR_ESTD_ECIG == "(1) 1 = Yes", 1,0 )) %>%
+  mutate(current_everyday_ecig_user = if_else(R01R_A_EDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
+  mutate(current_someday_ecig_user = if_else(R01R_A_SDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
+   mutate(current_past30day_ecig_user = if_else(R01R_A_P30D_ECIG == "(1) 1 = Yes", 1,0 )) 
+
+  
+wave1_adult %>%
+  select(R01_AE1022)
+
+
+
+
+
+```
 
