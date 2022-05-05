@@ -5,6 +5,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
 ```
 
 
@@ -12,19 +14,26 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1001-Data.rda")
 load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1002-Data.rda")
+load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-2001-Data.rda")
 load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-3001-Data.rda")
 ```
-
+R01_AN0015E, ## Has strong cravings to use e-cigarettes (for dual and poly users of tobacco who use e-cigarettes) 
+  mutate(R01_AN0015E = case_when(
+    R01_AN0015E == "(1) 1 = Yes" ~ 1,
+    R01_AN0015E == "(2) 2 = No" ~ 2
+  ))%>%
+  
 ```{r}
 library(tidyverse)
 library(ggplot2)
 wave1_adult <- da36498.1001
 wave1_youth_parent <- da36498.1002
 
+
 #select variables and data cleaning 
 
 chosen_variable_wave1<- wave1_adult %>%
-  select(CASEID, PERSONID, 
+  select( 
          R01_AC1002, ##Have you ever smoked a cigarette, even one or two puffs?
          R01_AC1003, ##Do you now smoke cigarettes . . .
          R01_AC1004, ##In the past 30 days, have you smoked a cigarette, even one or two puffs?
@@ -48,7 +57,6 @@ chosen_variable_wave1<- wave1_adult %>%
          R01R_A_AM0018, ## Highest grade or level of school completed
          R01R_A_AM0030, ## Total household income in the past 12 months
          R01_AN0015, ## Has strong cravings to use / smoke [tobacco products / specific product]
-         R01_AN0015E, ## Has strong cravings to use e-cigarettes (for dual and poly users of tobacco who use e-cigarettes)
          R01_AN0025, ##Please rate your level of agreement for each statement using the following scale: 1= not true of me at all to 5=extremely true of me.  The following statements are about the use of tobacco and nicotine in general.  I frequently crave [ND FILL2].
          R01_AN0025E, ##Please rate your level of agreement for each statement using the following scale: 1= not true of me at all to 5=extremely true of me.  I frequently crave e-cigarettes.
          R01_AN0215, ## Thinking back to [the time you tried to quit / the last time you tried to quit / when you quit] in the past 12 months, did you use any of the following to help you: counseling, a telephone help line or quit line, books, pamphlets, videos, a quit tobacco clinic, class, or support group, or an internet or web-based program?
@@ -77,163 +85,436 @@ chosen_variable_wave1<- wave1_adult %>%
          R01R_A_SDY_ECIG, ## Has ever used an e-cigarette, has used fairly regularly, and uses some days
          R01R_A_P30D_ECIG, ## Has ever used an e-cigarette and has used at least once in the past 30 days
          R01R_A_AGECAT7_IMP ## Imputed age range.
-         ) %>%
-  mutate(current_established_ecig_user = if_else(R01R_A_CUR_ESTD_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_everyday_ecig_user = if_else(R01R_A_EDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_someday_ecig_user = if_else(R01R_A_SDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_past30day_ecig_user = if_else(R01R_A_P30D_ECIG == "(1) 1 = Yes", 1,0 ))%>%
-  mutate(current_established_cig_user = if_else(R01R_A_CUR_ESTD_CIGS == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_everyday_cig_user = if_else(R01R_A_EDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_someday_cig_user = if_else(R01R_A_SDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_past30day_cig_user = if_else(R01R_A_P30D_CIGS == "(1) 1 = Yes", 1,0 ))%>%
-  mutate(Race= case_when(
+         )
+
+
+
+
+## mutate from factor to double 
+c_wave1 <- chosen_variable_wave1 %>%
+  mutate(R01_AC1002 = case_when(
+    R01_AC1002 == "(1) 1 = Yes" ~ 1,
+    R01_AC1002 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AC1003 = case_when(
+    R01_AC1003 == "(1) 1 = Every day" ~ 1,
+    R01_AC1003 == "(2) 2 = Some days" ~ 2,
+    R01_AC1003 == "(3) 3 = Not at all" ~ 3
+  ))%>%
+  mutate(R01_AC1004 = case_when(
+    R01_AC1004 == "(2) 2 = No" ~ 2,
+    R01_AC1004 == "(1) 1 = Yes" ~ 1,
+  ))%>%
+  mutate(R01_AE1001 = case_when(
+    R01_AE1001 == "(1) 1 = Yes" ~ 1,
+    R01_AE1001 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AE1002 = case_when(
+    R01_AE1002 == "(1) 1 = Yes" ~ 1,
+    R01_AE1002 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AE1003 = case_when(
+    R01_AC1003 == "(1) 1 = Every day" ~ 1,
+    R01_AC1003 == "(2) 2 = Some days" ~ 2,
+    R01_AC1003 == "(3) 3 = Not at all" ~ 3
+  ))%>%
+  mutate(R01_AE1004 = case_when(
+    R01_AE1004 == "(1) 1 = Yes" ~ 1,
+    R01_AE1004 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AE1008 = case_when(
+    R01_AE1008 == "(1) 1 = Yes" ~ 1,
+    R01_AE1008 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AE1090 = case_when(
+    R01_AE1090 == "(1) 1 = Yes" ~ 1,
+    R01_AE1090 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AE1100 = case_when(
+    R01_AE1100 == "(1) 1 = Yes" ~ 1,
+    R01_AE1100 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01R_A_RACECAT3_IMP = case_when(
+    R01R_A_RACECAT3_IMP == "(1) 1 = White alone" ~ "White",
+    R01R_A_RACECAT3_IMP == "(2) 2 = Black alone" ~ "Black",
+    R01R_A_RACECAT3_IMP == "(3) 3 = Other" ~ "Other"
+  ))%>%
+  mutate(R01R_A_SEXORIENT2 = case_when(
+    R01R_A_SEXORIENT2 == "(1) 1 = Lesbian, Gay, Bisexual, Something else" ~ 1,
+    R01R_A_SEXORIENT2 == "(2) 2 = Straight" ~ 2
+  ))%>%
+  mutate(R01R_A_AC1006 = case_when(
+    R01R_A_AC1006 == "(1) 1 = Less than 18 years old" ~ 1,
+    R01R_A_AC1006 == "(2) 2 = 18 to 24 years old" ~ 2,
+    R01R_A_AC1006 == "(3) 3 = 25 to 34 years old" ~ 3,
+    R01R_A_AC1006 == "(4) 4 = 35 to 44 years old" ~ 4,
+    R01R_A_AC1006 == "(5) 5 = 45 to 54 years old" ~ 5,
+    R01R_A_AC1006 == "(6) 6 = 55 years old or older" ~ 6
+  ))%>%
+  mutate(R01R_A_AE1006 = case_when(
+    R01R_A_AE1006 == "(1) 1 = Less than 18 years old" ~ 1,
+    R01R_A_AE1006 == "(2) 2 = 18 to 24 years old" ~ 2,
+    R01R_A_AE1006 == "(3) 3 = 25 to 34 years old" ~ 3,
+    R01R_A_AE1006 == "(4) 4 = 35 to 44 years old" ~ 4,
+    R01R_A_AE1006 == "(5) 5 = 45 to 54 years old" ~ 5,
+    R01R_A_AE1006 == "(6) 6 = 55 years old or older" ~ 6
+  ))%>%
+  mutate(R01R_A_AE1007 = case_when(
+    R01R_A_AE1007 == "(1) 1 = Less than 18 years old" ~ 1,
+    R01R_A_AE1007 == "(2) 2 = 18 to 24 years old" ~ 2,
+    R01R_A_AE1007 == "(3) 3 = 25 to 34 years old" ~ 3,
+    R01R_A_AE1007 == "(4) 4 = 35 to 44 years old" ~ 4,
+    R01R_A_AE1007 == "(5) 5 = 45 to 54 years old" ~ 5,
+    R01R_A_AE1007 == "(6) 6 = 55 years old or older" ~ 6
+  ))%>%
+  mutate(R01R_A_AE1020 = case_when(
+    R01R_A_AE1020 == "(1) 1 = Less than 18 years old" ~ 1,
+    R01R_A_AE1020 == "(2) 2 = 18 to 24 years old" ~ 2,
+    R01R_A_AE1020 == "(3) 3 = 25 to 34 years old" ~ 3,
+    R01R_A_AE1020 == "(4) 4 = 35 to 44 years old" ~ 4,
+    R01R_A_AE1020 == "(5) 5 = 45 to 54 years old" ~ 5,
+    R01R_A_AE1020 == "(6) 6 = 55 years old or older" ~ 6
+  ))%>%
+  mutate(R01R_A_AM0018 = case_when(
+    R01R_A_AM0018 == "(1) 1 = Less than High School" ~ 1,
+    R01R_A_AM0018 == "(2) 2 = GED" ~ 2,
+    R01R_A_AM0018 == "(3) 3 = High school graduate" ~ 3,
+    R01R_A_AM0018 == "(4) 4 = Some college (no degree) or associates degree" ~ 4,
+    R01R_A_AM0018 == "(5) 5 = Bachelor's degree" ~ 5,
+    R01R_A_AM0018 == "(6) 6 = Advanced degree" ~ 6
+  ))%>%
+  mutate(R01R_A_AM0030 = case_when(
+    R01R_A_AM0030 == "(1) 1 = Less than $10,000" ~ 1,
+    R01R_A_AM0030 == "(2) 2 = $10,000 to $24,999" ~ 2,
+    R01R_A_AM0030 == "(3) 3 = $25,000 to $49,999" ~ 3,
+    R01R_A_AM0030 == "(4) 4 = $50,000 to $99,999" ~ 4,
+    R01R_A_AM0030 == "(5) 5 = $100,000 or more" ~ 5
+  ))%>%
+  mutate(R01_AN0015 = case_when(
+    R01_AN0015 == "(1) 1 = Yes" ~ 1,
+    R01_AN0015 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AN0025 = case_when(
+    R01_AN0025 == "(1) 1 = Not true of me at all" ~ 1,
+    R01_AN0025 == "(2) 2 = 2 on a scale of 1 to 5" ~ 2,
+    R01_AN0025 == "(3) 3 = 3 on a scale of 1 to 5" ~ 3,
+    R01_AN0025 == "(4) 4 = 4 on a scale of 1 to 5" ~ 4,
+    R01_AN0025 == "(5) 5 = Extremely true of me" ~5
+    ))%>%
+  mutate(R01_AN0025E = case_when(
+    R01_AN0025E == "(1) 1 = Not true of me at all" ~ 1,
+    R01_AN0025E == "(2) 2 = 2 on a scale of 1 to 5" ~ 2,
+    R01_AN0025E == "(3) 3 = 3 on a scale of 1 to 5" ~ 3,
+    R01_AN0025E == "(4) 4 = 4 on a scale of 1 to 5" ~ 4,
+    R01_AN0025E == "(5) 5 = Extremely true of me" ~5
+  ))%>%
+  mutate(R01_AN0215 = case_when(
+    R01_AN0215 == "(1) 1 = Yes" ~ 1,
+    R01_AN0215 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AN0215E = case_when(
+    R01_AN0215E == "(1) 1 = Yes" ~ 1,
+    R01_AN0215E == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AN0250 = case_when(
+    R01_AN0250 == "(1) 1 = Not at all" ~ 1,
+    R01_AN0250 == "(2) 2 = A little" ~ 2,
+    R01_AN0250 == "(3) 3 = Somewhat" ~ 3,
+    R01_AN0250 == "(4) 4 = Very much" ~ 4
+  ))%>%
+  mutate(R01_AR0110 = case_when(
+    R01_AR0110 == "(1) 1 = Never" ~ 1,
+    R01_AR0110 == "(2) 2 = Rarely" ~ 2,
+    R01_AR0110 == "(3) 3 = Sometimes" ~ 3,
+    R01_AR0110 == "(4) 4 = Often" ~ 4,
+    R01_AR0110 == "(5) 5 = Very often" ~ 5
+  ))%>%
+  mutate(R01_AR0142 = case_when(
+    R01_AR0142 == "(1) 1 = Never" ~ 1,
+    R01_AR0142 == "(2) 2 = Rarely" ~ 2,
+    R01_AR0142 == "(3) 3 = Sometimes" ~ 3,
+    R01_AR0142 == "(4) 4 = Often" ~ 4,
+    R01_AR0142 == "(5) 5 = Very often" ~ 5
+  ))%>%
+  mutate(R01_AX0005 = case_when(
+    R01_AX0005 == "(1) 1 = Very positive" ~ 1,
+    R01_AX0005 == "(2) 2 = Positive" ~ 2,
+    R01_AX0005 == "(3) 3 = Neither positive nor negative" ~ 3,
+    R01_AX0005 == "(4) 4 = Negative" ~ 4,
+    R01_AX0005 == "(5) 5 = Very negative" ~ 5
+  ))%>%
+  mutate(R01_AX0090 = case_when(
+    R01_AX0090 == "(1) 1 = Excellent" ~ 1,
+    R01_AX0090 == "(2) 2 = Very good" ~ 2,
+    R01_AX0090 == "(3) 3 = Good" ~ 3,
+    R01_AX0090 == "(4) 4 = Fair" ~ 4,
+    R01_AX0090 == "(5) 5 = Poor" ~ 5
+  ))%>%
+  mutate(R01_AX0091 = case_when(
+    R01_AX0091 == "(1) 1 = Excellent" ~ 1,
+    R01_AX0091 == "(2) 2 = Very good" ~ 2,
+    R01_AX0091 == "(3) 3 = Good" ~ 3,
+    R01_AX0091 == "(4) 4 = Fair" ~ 4,
+    R01_AX0091 == "(5) 5 = Poor" ~ 5
+  ))%>%
+  mutate(R01_AX0004 = case_when(
+    R01_AX0004 == "(1) 1 = Never" ~ 1,
+    R01_AX0004 == "(2) 2 = Rarely" ~ 2,
+    R01_AX0004 == "(3) 3 = Sometimes" ~ 3,
+    R01_AX0004 == "(4) 4 = Often" ~ 4,
+    R01_AX0004 == "(5) 5 = Very often" ~ 5
+  ))%>%
+  mutate(R01_AC9050 = case_when(
+    R01_AC9050 == "(1) 1 = Not at all harmful" ~ 1,
+    R01_AC9050 == "(2) 2 = Slightly harmful" ~ 2,
+    R01_AC9050 == "(3) 3 = Somewhat harmful" ~ 3,
+    R01_AC9050 == "(4) 4 = Very harmful" ~ 4,
+    R01_AC9050 == "(5) 5 = Extremely harmful" ~ 5
+  ))%>%
+  mutate(R01_AE1099 = case_when(
+    R01_AE1099 == "(1) 1 = Less harmful" ~ 1,
+    R01_AE1099 == "(2) 2 = About the same" ~ 2,
+    R01_AE1099 == "(3) 3 = More harmful" ~ 3
+  ))%>%
+  mutate(R01_AX0064_01 = case_when(
+    R01_AX0064_01 == "(1) 1 = Marked" ~ 1,
+    R01_AX0064_01 == "(2) 2 = Not Marked" ~ 2
+  ))%>%
+  mutate(R01_AX0064_02 = case_when(
+    R01_AX0064_02 == "(1) 1 = Marked" ~ 1,
+    R01_AX0064_02 == "(2) 2 = Not Marked" ~ 2
+  ))%>%
+  mutate(R01_AX0064_03 = case_when(
+    R01_AX0064_03 == "(1) 1 = Marked" ~ 1,
+    R01_AX0064_03 == "(2) 2 = Not Marked" ~ 2
+  ))%>%
+  mutate(R01_AX0065 = case_when(
+    R01_AX0065 == "(1) 1 = Never" ~ 1,
+    R01_AX0065 == "(2) 2 = Today" ~ 2,
+    R01_AX0065 == "(3) 3 = In the past week" ~ 3,
+    R01_AX0065 == "(4) 4 = In the past two weeks" ~ 4,
+    R01_AX0065 == "(5) 5 = In the past month" ~ 5,
+    R01_AX0065 == "(6) 6 = Longer than a month ago but within the past year" ~ 6,
+    R01_AX0065 == "(7) 7 = More than a year ago" ~ 7
+  ))%>%
+  mutate(R01_AR0144 = case_when(
+    R01_AR0144 == "(1) 1 = Yes" ~ 1,
+    R01_AR0144 == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01_AX0104 = case_when(
+    R01_AX0104 == "(1) 1 = Not at all" ~ 1,
+    R01_AX0104 == "(2) 2 = A little" ~ 2,
+    R01_AX0104 == "(3) 3 = Somewhat" ~ 3,
+    R01_AX0104 == "(4) 4 = A lot" ~ 4
+  ))%>%
+  mutate(R01_AX0105 = case_when(
+    R01_AX0105 == "(1) 1 = Not at all worried" ~ 1,
+    R01_AX0105 == "(2) 2 = A little worried" ~ 2,
+    R01_AX0105 == "(3) 3 = Moderately worried" ~ 3,
+    R01_AX0105 == "(4) 4 = Very worried" ~ 4
+  ))%>%
+  mutate(R01R_A_CUR_ESTD_ECIG = case_when(
+    R01R_A_CUR_ESTD_ECIG == "(1) 1 = Yes" ~ 1,
+    R01R_A_CUR_ESTD_ECIG == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01R_A_EDY_ECIG = case_when(
+    R01R_A_EDY_ECIG == "(1) 1 = Yes" ~ 1,
+    R01R_A_EDY_ECIG == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01R_A_SDY_ECIG = case_when(
+    R01R_A_SDY_ECIG == "(1) 1 = Yes" ~ 1,
+    R01R_A_SDY_ECIG == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01R_A_P30D_ECIG = case_when(
+    R01R_A_P30D_ECIG == "(1) 1 = Yes" ~ 1,
+    R01R_A_P30D_ECIG == "(2) 2 = No" ~ 2
+  ))%>%
+  mutate(R01R_A_AGECAT7_IMP = case_when(
+    R01R_A_AGECAT7_IMP == "(1) 1 = 18 to 24 years old" ~ 1,
+    R01R_A_AGECAT7_IMP == "(2) 2 = 25 to 34 years old" ~ 2,
+    R01R_A_AGECAT7_IMP == "(3) 3 = 35 to 44 years old" ~ 3,
+    R01R_A_AGECAT7_IMP == "(4) 4 = 45 to 54 years old" ~ 4,
+    R01R_A_AGECAT7_IMP == "(5) 5 = 55 to 64 years old" ~ 5
+  ))%>%
+  mutate(R01R_A_RACECAT3 = case_when(
     R01R_A_RACECAT3 == "(1) 1 = White alone"~"White",
     R01R_A_RACECAT3 == "(2) 2 = Black alone"~ "Black",
     R01R_A_RACECAT3 == "(3) 3 = Other"~ "other"
-  )) %>%
-  mutate(ecig_craving = case_when(
-    R01_AN0025E == "(1) 1 = Not true of me at all"~ "1",
-    R01_AN0025E == "(2) 2 = 2 on a scale of 1 to 5"~ "2",
-    R01_AN0025E == "(3) 3 = 3 on a scale of 1 to 5"~ "3",
-    R01_AN0025E == "(4) 4 = 4 on a scale of 1 to 5"~ "4",
-    R01_AN0025E == "(5) 5 = Extremely true of me"~ "5"
-    ))
+  ))%>%
+  mutate(R01R_A_CUR_ESTD_CIGS = if_else(R01R_A_CUR_ESTD_CIGS == "(1) 1 = Yes", 1,0 )) %>%
+  mutate(R01R_A_EDY_CIGS = if_else(R01R_A_EDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
+  mutate(R01R_A_SDY_CIGS = if_else(R01R_A_SDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
+  mutate(R01R_A_P30D_CIGS = if_else(R01R_A_P30D_CIGS == "(1) 1 = Yes", 1,0 ))
  
 
-#race distribution   
-chosen_variable_wave1 %>%
-  ggplot()+
-  geom_bar(aes(x = R01R_A_RACECAT3))
+ 
 
-chosen_variable_wave1 %>%
-  ggplot(aes(R01R_A_RACECAT3)) +
+
+
+## race and e-cig smoking 
+df1 <- c_wave1 %>%
+  rename(ecig_craving = R01_AN0025E) %>%
+  rename(Race = R01R_A_RACECAT3) %>%
+  rename(current_established_ecig_user = R01R_A_CUR_ESTD_ECIG) %>%
+  rename(current_everyday_ecig_user = R01R_A_EDY_ECIG) %>%
+  rename(current_someday_ecig_user = R01R_A_SDY_ECIG) %>%
+  rename(current_past30day_ecig_user = R01R_A_P30D_ECIG)%>%
+  rename(current_established_cig_user = R01R_A_CUR_ESTD_CIGS) %>%
+  rename(current_everyday_cig_user = R01R_A_EDY_CIGS) %>%
+  rename(current_someday_cig_user = R01R_A_SDY_CIGS) %>%
+  rename(current_past30day_cig_user = R01R_A_P30D_CIGS)
+
+   
+
+
+#race distribution   
+df1 %>%
+  ggplot()+
+  geom_bar(aes(x = Race))
+
+df1 %>%
+  ggplot(aes(Race)) +
   geom_bar(aes(y = (..count..)/sum(..count..)))+
   scale_y_continuous(labels=scales::percent) +
           ylab("relative frequencies")
 
-## race and e-cig smoking 
-chosen_variable_wave1 %>%
-  ggplot()+
-  geom_col(aes(x = R01R_A_RACECAT3, y = current_established_ecig_user))
 
-chosen_variable_wave1 %>%
-  ggplot()+
-  geom_col(aes(x = R01R_A_RACECAT3, y = current_everyday_ecig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%       
   ggplot()+
-  geom_col(aes(x = R01R_A_RACECAT3, y = current_someday_ecig_user))
+  geom_col(aes(x = Race, y = current_established_ecig_user))
 
-chosen_variable_wave1 %>%
+
+df1 %>% 
   ggplot()+
-  geom_col(aes(x = R01R_A_RACECAT3, y = current_past30day_ecig_user))
+  geom_col(aes(x = Race, y = current_everyday_ecig_user))
+
+df1 %>% 
+  ggplot()+
+  geom_col(aes(x = Race, y = current_someday_ecig_user))
+
+df1 %>%   
+  ggplot()+
+  geom_col(aes(x = Race, y = current_past30day_ecig_user))
 
 ## smoking cigarettes and smoking e-cigarettes   
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = R01_AC1003, y = current_established_ecig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = R01_AC1003, y = current_everyday_ecig_user))
 
-chosen_variable_wave1 %>%
+df1 %>% 
   ggplot()+
   geom_col(aes(x = R01_AC1003, y = current_someday_ecig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = R01_AC1003, y = current_past30day_ecig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = current_established_ecig_user, y = current_established_cig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = current_everyday_ecig_user, y = current_everyday_cig_user))
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x = current_someday_ecig_user, y = current_someday_cig_user))
 
 
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
-  geom_col(aes(x = R01_AC1003, y = R01_AN0025E))
+  geom_col(aes(x = R01_AC1003, y = ecig_craving))
 
 #Craving and established e-cig smokers
-chosen_variable_wave1 %>%
+df1 %>%
   ggplot()+
   geom_col(aes(x =ecig_craving , y= current_established_ecig_user))
 
-chosen_variable_wave1 %>%
-  ggplot()+
-  geom_bar(aes(x =ecig_craving))
-
-df1<- chosen_variable_wave1 %>%
-  select( CASEID, ecig_craving, current_established_ecig_user)
-
-
 df1 %>%
-  summarise(ecig_craving)
+  ggplot()+
+  geom_bar(aes(x = ecig_craving)) 
+
+
+
+
 
 
 wave2 <- da36498.2001
 
-chosen_variable_wave2<- wave2 %>%
-   select(CASEID, PERSONID, 
-R02_AC1002_12M,
-R02_AC1003,
-R02_AC1004,
-R02_AC9050,
-R02_AE1008,
-R02_AE1004,
-R02_AE1022,
-R02_AE1090,
-R02_AE1099,
-R02_AE1100,
-R02R_A_AC1006,
-R02R_A_AE1006,
-R02R_A_AE1007,
-R02R_A_AE1020,
-R02R_A_AM0018,
-R02R_A_AM0030,
-R02_AN0015,
-R02_AN0015E,
-R02_AN0025,
-R02_AN0025E,
-R02_AN0215,
-R02_AN0215E,
-R02_AR0110,
-R02_AR0142,
-R02_AX0004,
-R02_AX0005,
-R02_AX0090,
-R02_AX0091,
-R02_AN0250,
-R02_AX0064_01,
-R02_AX0064_02,
-R02_AX0064_03,
-R02_AX0065,
-R02_AR0144,
-R02_AX0104,
-R02_AX0105,
-R02R_A_RACECAT3_IMP, 
-R02R_A_BMI,
-R02R_A_SEXORIENT2,
-R02R_A_RACECAT3,
-R02R_A_CUR_ESTD_ECIG,
-R02R_A_EDY_ECIG,
-R02R_A_SDY_ECIG, 
-R02R_A_P30D_ECIG,
-R02R_A_AGECAT7_IMP) %>%
-  mutate(current_established_ecig_user = if_else(R02R_A_CUR_ESTD_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_everyday_ecig_user = if_else(R02R_A_EDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(current_someday_ecig_user = if_else(R02R_A_SDY_ECIG == "(1) 1 = Yes", 1,0 )) %>%
-   mutate(current_past30day_ecig_user = if_else(R02R_A_P30D_ECIG == "(1) 1 = Yes", 1,0 )) 
+
 
 
 
 ```
+
+
+```{r}
+library(vip)
+library(patchwork)
+library(tidyverse)
+library(tidymodels)
+
+theme_set(theme_minimal())
+
+
+df_ecig <- df1%>%
+  drop_na(ecig_craving)
+
+df_ecig$ecig_craving<-
+  as.factor(df_ecig$ecig_craving)
+
+set.seed(1234)
+
+split <- initial_split(df_ecig, 
+                       prop = 0.7, 
+                       strata = "ecig_craving")
+
+train<- training(split)
+test<- testing(split)
+
+
+
+#creating a recipe for the supervised machine learning model
+rec<- 
+  recipe(ecig_craving~  ., data = df_ecig) %>%
+  step_dummy(all_nominal_predictors())
+
+
+bake(prep(rec, train), new_data = train)
+
+# set up resampling using 10-fold cross validation
+set.seed(20211102)
+folds <- vfold_cv(data = train, v = 10, repeats = 1)
+
+
+##decision tree 
+
+cart_mod <-decision_tree()  %>%
+  set_engine(engine = "rpart") %>%
+  set_mode(mode = "classification")
+
+cart_wf <- workflow() %>%
+  add_model(cart_mod)%>%
+  add_recipe(rec)
+
+cart_fit <- cart_wf %>%
+  fit( data = train)
+
+y_predict <-predict(cart_fit, new_data = test) 
+
+
+rpart.plot::rpart.plot(x = cart_fit$fit$fit$fit)
+
+
+
+
+
+```
+
 
