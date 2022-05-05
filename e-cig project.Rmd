@@ -459,6 +459,8 @@ library(vip)
 library(patchwork)
 library(tidyverse)
 library(tidymodels)
+library(rpart)
+library(rpart.plot)
 
 theme_set(theme_minimal())
 
@@ -469,9 +471,29 @@ df_ecig <- df1%>%
 df_ecig$ecig_craving<-
   as.factor(df_ecig$ecig_craving)
 
+df2<- chosen_variable_wave1%>%
+  rename(ecig_craving = R01_AN0025E)%>%
+  drop_na(ecig_craving)%>%
+  rename(Race = R01R_A_RACECAT3) %>%
+  rename(current_established_ecig_user = R01R_A_CUR_ESTD_ECIG) %>%
+  rename(current_everyday_ecig_user = R01R_A_EDY_ECIG) %>%
+  rename(current_someday_ecig_user = R01R_A_SDY_ECIG) %>%
+  rename(current_past30day_ecig_user = R01R_A_P30D_ECIG)%>%
+  rename(current_established_cig_user = R01R_A_CUR_ESTD_CIGS) %>%
+  rename(current_everyday_cig_user = R01R_A_EDY_CIGS) %>%
+  rename(current_someday_cig_user = R01R_A_SDY_CIGS) %>%
+  rename(current_past30day_cig_user = R01R_A_P30D_CIGS)%>%
+  rename(BMI = R01R_A_BMI )%>%
+  rename(attitude = R01_AC9050)%>%
+  rename(hhincome = R01R_A_AM0030)%>%
+  rename(cig_crave = R01_AN0025)
+  
+  
+
+
 set.seed(1234)
 
-split <- initial_split(df_ecig, 
+split <- initial_split(df2, 
                        prop = 0.7, 
                        strata = "ecig_craving")
 
@@ -482,7 +504,7 @@ test<- testing(split)
 
 #creating a recipe for the supervised machine learning model
 rec<- 
-  recipe(ecig_craving~  ., data = df_ecig) %>%
+  recipe(ecig_craving~  ., data = df2) %>%
   step_dummy(all_nominal_predictors())
 
 
@@ -509,10 +531,11 @@ cart_fit <- cart_wf %>%
 y_predict <-predict(cart_fit, new_data = test) 
 
 
-rpart.plot::rpart.plot(x = cart_fit$fit$fit$fit)
+rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
 
 
 
+## 
 
 
 ```
