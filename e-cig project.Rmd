@@ -84,123 +84,21 @@ chosen_variable_wave1<- wave1_adult %>%
          R01R_A_EDY_ECIG, ## Has ever used an e-cigarette, has used fairly regularly, and uses every day.
          R01R_A_SDY_ECIG, ## Has ever used an e-cigarette, has used fairly regularly, and uses some days
          R01R_A_P30D_ECIG, ## Has ever used an e-cigarette and has used at least once in the past 30 days
-         R01R_A_AGECAT7_IMP ## Imputed age range.
+         R01R_A_AGECAT7_IMP, ## Imputed age range,
          )
 
 
 
 
-## mutate from factor to double 
-c_wave1 <- chosen_variable_wave1 %>%
-  mutate(R01_AC1002 = case_when(
-    R01_AC1002 == "(1) 1 = Yes" ~ 1,
-    R01_AC1002 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AC1003 = case_when(
-    R01_AC1003 == "(1) 1 = Every day" ~ 1,
-    R01_AC1003 == "(2) 2 = Some days" ~ 2,
-    R01_AC1003 == "(3) 3 = Not at all" ~ 3
-  ))%>%
-  mutate(R01_AC1004 = case_when(
-    R01_AC1004 == "(2) 2 = No" ~ 2,
-    R01_AC1004 == "(1) 1 = Yes" ~ 1,
-  ))%>%
-  mutate(R01_AE1001 = case_when(
-    R01_AE1001 == "(1) 1 = Yes" ~ 1,
-    R01_AE1001 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AE1002 = case_when(
-    R01_AE1002 == "(1) 1 = Yes" ~ 1,
-    R01_AE1002 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AE1003 = case_when(
-    R01_AC1003 == "(1) 1 = Every day" ~ 1,
-    R01_AC1003 == "(2) 2 = Some days" ~ 2,
-    R01_AC1003 == "(3) 3 = Not at all" ~ 3
-  ))%>%
-  mutate(R01_AE1004 = case_when(
-    R01_AE1004 == "(1) 1 = Yes" ~ 1,
-    R01_AE1004 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AE1008 = case_when(
-    R01_AE1008 == "(1) 1 = Yes" ~ 1,
-    R01_AE1008 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AE1090 = case_when(
-    R01_AE1090 == "(1) 1 = Yes" ~ 1,
-    R01_AE1090 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AE1100 = case_when(
-    R01_AE1100 == "(1) 1 = Yes" ~ 1,
-    R01_AE1100 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01R_A_RACECAT3_IMP = case_when(
-    R01R_A_RACECAT3_IMP == "(1) 1 = White alone" ~ "White",
-    R01R_A_RACECAT3_IMP == "(2) 2 = Black alone" ~ "Black",
-    R01R_A_RACECAT3_IMP == "(3) 3 = Other" ~ "Other"
-  ))%>%
-  mutate(R01R_A_SEXORIENT2 = case_when(
-    R01R_A_SEXORIENT2 == "(1) 1 = Lesbian, Gay, Bisexual, Something else" ~ 1,
-    R01R_A_SEXORIENT2 == "(2) 2 = Straight" ~ 2
-  ))%>%
-  mutate(R01R_A_AC1006 = case_when(
-    R01R_A_AC1006 == "(1) 1 = Less than 18 years old" ~ 1,
-    R01R_A_AC1006 == "(2) 2 = 18 to 24 years old" ~ 2,
-    R01R_A_AC1006 == "(3) 3 = 25 to 34 years old" ~ 3,
-    R01R_A_AC1006 == "(4) 4 = 35 to 44 years old" ~ 4,
-    R01R_A_AC1006 == "(5) 5 = 45 to 54 years old" ~ 5,
-    R01R_A_AC1006 == "(6) 6 = 55 years old or older" ~ 6
-  ))%>%
-  mutate(R01R_A_AE1006 = case_when(
-    R01R_A_AE1006 == "(1) 1 = Less than 18 years old" ~ 1,
-    R01R_A_AE1006 == "(2) 2 = 18 to 24 years old" ~ 2,
-    R01R_A_AE1006 == "(3) 3 = 25 to 34 years old" ~ 3,
-    R01R_A_AE1006 == "(4) 4 = 35 to 44 years old" ~ 4,
-    R01R_A_AE1006 == "(5) 5 = 45 to 54 years old" ~ 5,
-    R01R_A_AE1006 == "(6) 6 = 55 years old or older" ~ 6
-  ))%>%
-  mutate(R01R_A_AE1007 = case_when(
-    R01R_A_AE1007 == "(1) 1 = Less than 18 years old" ~ 1,
-    R01R_A_AE1007 == "(2) 2 = 18 to 24 years old" ~ 2,
-    R01R_A_AE1007 == "(3) 3 = 25 to 34 years old" ~ 3,
-    R01R_A_AE1007 == "(4) 4 = 35 to 44 years old" ~ 4,
-    R01R_A_AE1007 == "(5) 5 = 45 to 54 years old" ~ 5,
-    R01R_A_AE1007 == "(6) 6 = 55 years old or older" ~ 6
-  ))%>%
-  mutate(R01R_A_AE1020 = case_when(
-    R01R_A_AE1020 == "(1) 1 = Less than 18 years old" ~ 1,
-    R01R_A_AE1020 == "(2) 2 = 18 to 24 years old" ~ 2,
-    R01R_A_AE1020 == "(3) 3 = 25 to 34 years old" ~ 3,
-    R01R_A_AE1020 == "(4) 4 = 35 to 44 years old" ~ 4,
-    R01R_A_AE1020 == "(5) 5 = 45 to 54 years old" ~ 5,
-    R01R_A_AE1020 == "(6) 6 = 55 years old or older" ~ 6
-  ))%>%
-  mutate(R01R_A_AM0018 = case_when(
-    R01R_A_AM0018 == "(1) 1 = Less than High School" ~ 1,
-    R01R_A_AM0018 == "(2) 2 = GED" ~ 2,
-    R01R_A_AM0018 == "(3) 3 = High school graduate" ~ 3,
-    R01R_A_AM0018 == "(4) 4 = Some college (no degree) or associates degree" ~ 4,
-    R01R_A_AM0018 == "(5) 5 = Bachelor's degree" ~ 5,
-    R01R_A_AM0018 == "(6) 6 = Advanced degree" ~ 6
-  ))%>%
-  mutate(R01R_A_AM0030 = case_when(
-    R01R_A_AM0030 == "(1) 1 = Less than $10,000" ~ 1,
-    R01R_A_AM0030 == "(2) 2 = $10,000 to $24,999" ~ 2,
-    R01R_A_AM0030 == "(3) 3 = $25,000 to $49,999" ~ 3,
-    R01R_A_AM0030 == "(4) 4 = $50,000 to $99,999" ~ 4,
-    R01R_A_AM0030 == "(5) 5 = $100,000 or more" ~ 5
-  ))%>%
-  mutate(R01_AN0015 = case_when(
-    R01_AN0015 == "(1) 1 = Yes" ~ 1,
-    R01_AN0015 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AN0025 = case_when(
-    R01_AN0025 == "(1) 1 = Not true of me at all" ~ 1,
-    R01_AN0025 == "(2) 2 = 2 on a scale of 1 to 5" ~ 2,
-    R01_AN0025 == "(3) 3 = 3 on a scale of 1 to 5" ~ 3,
-    R01_AN0025 == "(4) 4 = 4 on a scale of 1 to 5" ~ 4,
-    R01_AN0025 == "(5) 5 = Extremely true of me" ~5
-    ))%>%
+ 
+
+ 
+
+
+
+
+## race and e-cig smoking 
+df1 <- chosen_variable_wave1 %>%
   mutate(R01_AN0025E = case_when(
     R01_AN0025E == "(1) 1 = Not true of me at all" ~ 1,
     R01_AN0025E == "(2) 2 = 2 on a scale of 1 to 5" ~ 2,
@@ -208,112 +106,7 @@ c_wave1 <- chosen_variable_wave1 %>%
     R01_AN0025E == "(4) 4 = 4 on a scale of 1 to 5" ~ 4,
     R01_AN0025E == "(5) 5 = Extremely true of me" ~5
   ))%>%
-  mutate(R01_AN0215 = case_when(
-    R01_AN0215 == "(1) 1 = Yes" ~ 1,
-    R01_AN0215 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AN0215E = case_when(
-    R01_AN0215E == "(1) 1 = Yes" ~ 1,
-    R01_AN0215E == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AN0250 = case_when(
-    R01_AN0250 == "(1) 1 = Not at all" ~ 1,
-    R01_AN0250 == "(2) 2 = A little" ~ 2,
-    R01_AN0250 == "(3) 3 = Somewhat" ~ 3,
-    R01_AN0250 == "(4) 4 = Very much" ~ 4
-  ))%>%
-  mutate(R01_AR0110 = case_when(
-    R01_AR0110 == "(1) 1 = Never" ~ 1,
-    R01_AR0110 == "(2) 2 = Rarely" ~ 2,
-    R01_AR0110 == "(3) 3 = Sometimes" ~ 3,
-    R01_AR0110 == "(4) 4 = Often" ~ 4,
-    R01_AR0110 == "(5) 5 = Very often" ~ 5
-  ))%>%
-  mutate(R01_AR0142 = case_when(
-    R01_AR0142 == "(1) 1 = Never" ~ 1,
-    R01_AR0142 == "(2) 2 = Rarely" ~ 2,
-    R01_AR0142 == "(3) 3 = Sometimes" ~ 3,
-    R01_AR0142 == "(4) 4 = Often" ~ 4,
-    R01_AR0142 == "(5) 5 = Very often" ~ 5
-  ))%>%
-  mutate(R01_AX0005 = case_when(
-    R01_AX0005 == "(1) 1 = Very positive" ~ 1,
-    R01_AX0005 == "(2) 2 = Positive" ~ 2,
-    R01_AX0005 == "(3) 3 = Neither positive nor negative" ~ 3,
-    R01_AX0005 == "(4) 4 = Negative" ~ 4,
-    R01_AX0005 == "(5) 5 = Very negative" ~ 5
-  ))%>%
-  mutate(R01_AX0090 = case_when(
-    R01_AX0090 == "(1) 1 = Excellent" ~ 1,
-    R01_AX0090 == "(2) 2 = Very good" ~ 2,
-    R01_AX0090 == "(3) 3 = Good" ~ 3,
-    R01_AX0090 == "(4) 4 = Fair" ~ 4,
-    R01_AX0090 == "(5) 5 = Poor" ~ 5
-  ))%>%
-  mutate(R01_AX0091 = case_when(
-    R01_AX0091 == "(1) 1 = Excellent" ~ 1,
-    R01_AX0091 == "(2) 2 = Very good" ~ 2,
-    R01_AX0091 == "(3) 3 = Good" ~ 3,
-    R01_AX0091 == "(4) 4 = Fair" ~ 4,
-    R01_AX0091 == "(5) 5 = Poor" ~ 5
-  ))%>%
-  mutate(R01_AX0004 = case_when(
-    R01_AX0004 == "(1) 1 = Never" ~ 1,
-    R01_AX0004 == "(2) 2 = Rarely" ~ 2,
-    R01_AX0004 == "(3) 3 = Sometimes" ~ 3,
-    R01_AX0004 == "(4) 4 = Often" ~ 4,
-    R01_AX0004 == "(5) 5 = Very often" ~ 5
-  ))%>%
-  mutate(R01_AC9050 = case_when(
-    R01_AC9050 == "(1) 1 = Not at all harmful" ~ 1,
-    R01_AC9050 == "(2) 2 = Slightly harmful" ~ 2,
-    R01_AC9050 == "(3) 3 = Somewhat harmful" ~ 3,
-    R01_AC9050 == "(4) 4 = Very harmful" ~ 4,
-    R01_AC9050 == "(5) 5 = Extremely harmful" ~ 5
-  ))%>%
-  mutate(R01_AE1099 = case_when(
-    R01_AE1099 == "(1) 1 = Less harmful" ~ 1,
-    R01_AE1099 == "(2) 2 = About the same" ~ 2,
-    R01_AE1099 == "(3) 3 = More harmful" ~ 3
-  ))%>%
-  mutate(R01_AX0064_01 = case_when(
-    R01_AX0064_01 == "(1) 1 = Marked" ~ 1,
-    R01_AX0064_01 == "(2) 2 = Not Marked" ~ 2
-  ))%>%
-  mutate(R01_AX0064_02 = case_when(
-    R01_AX0064_02 == "(1) 1 = Marked" ~ 1,
-    R01_AX0064_02 == "(2) 2 = Not Marked" ~ 2
-  ))%>%
-  mutate(R01_AX0064_03 = case_when(
-    R01_AX0064_03 == "(1) 1 = Marked" ~ 1,
-    R01_AX0064_03 == "(2) 2 = Not Marked" ~ 2
-  ))%>%
-  mutate(R01_AX0065 = case_when(
-    R01_AX0065 == "(1) 1 = Never" ~ 1,
-    R01_AX0065 == "(2) 2 = Today" ~ 2,
-    R01_AX0065 == "(3) 3 = In the past week" ~ 3,
-    R01_AX0065 == "(4) 4 = In the past two weeks" ~ 4,
-    R01_AX0065 == "(5) 5 = In the past month" ~ 5,
-    R01_AX0065 == "(6) 6 = Longer than a month ago but within the past year" ~ 6,
-    R01_AX0065 == "(7) 7 = More than a year ago" ~ 7
-  ))%>%
-  mutate(R01_AR0144 = case_when(
-    R01_AR0144 == "(1) 1 = Yes" ~ 1,
-    R01_AR0144 == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01_AX0104 = case_when(
-    R01_AX0104 == "(1) 1 = Not at all" ~ 1,
-    R01_AX0104 == "(2) 2 = A little" ~ 2,
-    R01_AX0104 == "(3) 3 = Somewhat" ~ 3,
-    R01_AX0104 == "(4) 4 = A lot" ~ 4
-  ))%>%
-  mutate(R01_AX0105 = case_when(
-    R01_AX0105 == "(1) 1 = Not at all worried" ~ 1,
-    R01_AX0105 == "(2) 2 = A little worried" ~ 2,
-    R01_AX0105 == "(3) 3 = Moderately worried" ~ 3,
-    R01_AX0105 == "(4) 4 = Very worried" ~ 4
-  ))%>%
-  mutate(R01R_A_CUR_ESTD_ECIG = case_when(
+   mutate(R01R_A_CUR_ESTD_ECIG = case_when(
     R01R_A_CUR_ESTD_ECIG == "(1) 1 = Yes" ~ 1,
     R01R_A_CUR_ESTD_ECIG == "(2) 2 = No" ~ 2
   ))%>%
@@ -328,31 +121,11 @@ c_wave1 <- chosen_variable_wave1 %>%
   mutate(R01R_A_P30D_ECIG = case_when(
     R01R_A_P30D_ECIG == "(1) 1 = Yes" ~ 1,
     R01R_A_P30D_ECIG == "(2) 2 = No" ~ 2
-  ))%>%
-  mutate(R01R_A_AGECAT7_IMP = case_when(
-    R01R_A_AGECAT7_IMP == "(1) 1 = 18 to 24 years old" ~ 1,
-    R01R_A_AGECAT7_IMP == "(2) 2 = 25 to 34 years old" ~ 2,
-    R01R_A_AGECAT7_IMP == "(3) 3 = 35 to 44 years old" ~ 3,
-    R01R_A_AGECAT7_IMP == "(4) 4 = 45 to 54 years old" ~ 4,
-    R01R_A_AGECAT7_IMP == "(5) 5 = 55 to 64 years old" ~ 5
-  ))%>%
-  mutate(R01R_A_RACECAT3 = case_when(
-    R01R_A_RACECAT3 == "(1) 1 = White alone"~"White",
-    R01R_A_RACECAT3 == "(2) 2 = Black alone"~ "Black",
-    R01R_A_RACECAT3 == "(3) 3 = Other"~ "other"
-  ))%>%
-  mutate(R01R_A_CUR_ESTD_CIGS = if_else(R01R_A_CUR_ESTD_CIGS == "(1) 1 = Yes", 1,0 )) %>%
+  )) %>%
+   mutate(R01R_A_CUR_ESTD_CIGS = if_else(R01R_A_CUR_ESTD_CIGS == "(1) 1 = Yes", 1,0 )) %>%
   mutate(R01R_A_EDY_CIGS = if_else(R01R_A_EDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
   mutate(R01R_A_SDY_CIGS = if_else(R01R_A_SDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
-  mutate(R01R_A_P30D_CIGS = if_else(R01R_A_P30D_CIGS == "(1) 1 = Yes", 1,0 ))
- 
-
- 
-
-
-
-## race and e-cig smoking 
-df1 <- c_wave1 %>%
+  mutate(R01R_A_P30D_CIGS = if_else(R01R_A_P30D_CIGS == "(1) 1 = Yes", 1,0 ))%>%
   rename(ecig_craving = R01_AN0025E) %>%
   rename(Race = R01R_A_RACECAT3) %>%
   rename(current_established_ecig_user = R01R_A_CUR_ESTD_ECIG) %>%
@@ -362,7 +135,8 @@ df1 <- c_wave1 %>%
   rename(current_established_cig_user = R01R_A_CUR_ESTD_CIGS) %>%
   rename(current_everyday_cig_user = R01R_A_EDY_CIGS) %>%
   rename(current_someday_cig_user = R01R_A_SDY_CIGS) %>%
-  rename(current_past30day_cig_user = R01R_A_P30D_CIGS)
+  rename(current_past30day_cig_user = R01R_A_P30D_CIGS) 
+
 
    
 
@@ -453,7 +227,7 @@ wave2 <- da36498.2001
 
 ```
 
-
+## supervised machine learning 
 ```{r}
 library(vip)
 library(patchwork)
@@ -461,15 +235,17 @@ library(tidyverse)
 library(tidymodels)
 library(rpart)
 library(rpart.plot)
+library(parsnip)
+library(workflows)
 
 theme_set(theme_minimal())
 
 
-df_ecig <- df1%>%
-  drop_na(ecig_craving)
 
-df_ecig$ecig_craving<-
-  as.factor(df_ecig$ecig_craving)
+
+
+
+##df2$ecig_craving<- as.factor(df2$ecig_craving)
 
 df2<- chosen_variable_wave1%>%
   rename(ecig_craving = R01_AN0025E)%>%
@@ -488,7 +264,23 @@ df2<- chosen_variable_wave1%>%
   rename(hhincome = R01R_A_AM0030)%>%
   rename(cig_crave = R01_AN0025)
   
-  
+df3<- wave1_adult%>%
+  rename(ecig_craving = R01_AN0025E)%>%
+  drop_na(ecig_craving)%>%
+  rename(Race = R01R_A_RACECAT3) %>%
+  rename(current_established_ecig_user = R01R_A_CUR_ESTD_ECIG) %>%
+  rename(current_everyday_ecig_user = R01R_A_EDY_ECIG) %>%
+  rename(current_someday_ecig_user = R01R_A_SDY_ECIG) %>%
+  rename(current_past30day_ecig_user = R01R_A_P30D_ECIG)%>%
+  rename(current_established_cig_user = R01R_A_CUR_ESTD_CIGS) %>%
+  rename(current_everyday_cig_user = R01R_A_EDY_CIGS) %>%
+  rename(current_someday_cig_user = R01R_A_SDY_CIGS) %>%
+  rename(current_past30day_cig_user = R01R_A_P30D_CIGS)%>%
+  rename(BMI = R01R_A_BMI )%>%
+  rename(attitude = R01_AC9050)%>%
+  rename(hhincome = R01R_A_AM0030)%>%
+  rename(cig_crave = R01_AN0025)
+ 
 
 
 set.seed(1234)
@@ -510,10 +302,6 @@ rec<-
 
 bake(prep(rec, train), new_data = train)
 
-# set up resampling using 10-fold cross validation
-set.seed(20211102)
-folds <- vfold_cv(data = train, v = 10, repeats = 1)
-
 
 ##decision tree 
 
@@ -526,7 +314,7 @@ cart_wf <- workflow() %>%
   add_recipe(rec)
 
 cart_fit <- cart_wf %>%
-  fit( data = train)
+  parsnip::fit( data = train)
 
 y_predict <-predict(cart_fit, new_data = test) 
 
@@ -535,9 +323,218 @@ rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
 
 
 
-## 
+```
+
+### data imputation for missing values
+```{r}
+library(tidymodels)
+library(VIM)
+
+df2_imp_f<- kNN(df2, k=5)
+df2_imp_fct <- df2_imp_f%>%
+  select(R01_AC1002: R01R_A_AGECAT7_IMP)
+
+
+## converting to numeric 
+df3[sapply(df3, is.factor)] <- lapply(df3[sapply(df3, is.factor)], as.numeric)
+df2[sapply(df2, is.factor)] <- lapply(df2[sapply(df2, is.factor)], as.numeric)
+
+df2_imputed<- kNN(df2, k=5)
+
+df2_imp<- df2_imputed %>%
+  select(R01_AC1002: R01R_A_AGECAT7_IMP)
+
+summary(df2_imputed$R01_AE0103)
+summary(df2_imputed$R01_AE0103_imp)
+summary(df2$R01_AE0103)
+summary(df2_imputed$current_established_ecig_user_imp)
+summary(df2_imputed$current_established_ecig_user)
+summary(df2$current_everyday_ecig_user)
+
+```
+
+### Feature selection 
+```{r}
+library(Boruta) #a feature ranking and selection algorithm based on random forests algorithm
+library(caret)
+library(party)
+
+
+df3<- df3%>%
+  select(-c(PERSONID,CASEID)) %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+df2<- df2 %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+
+#1. Random Forest Method
+cf1 <- cforest(ecig_craving ~ . , data= df2, control=cforest_unbiased(mtry=2,ntree=50))
+varimp(cf1)# get variable importance, based on mean decrease in accuracy
+
+#on larger dataframe 
+cf2 <- cforest(ecig_craving ~ . , data= df3, control=cforest_unbiased(mtry=2,ntree=50))
+varimp(cf2)# get variable importance, based on mean decrease in accuracy
+
+#on imputed dataframe 
+
+cf3 <- cforest(ecig_craving ~ . , data= df2_imp, control=cforest_unbiased(mtry=2,ntree=50))
+varimp(cf3)# get variable importance, based on mean decrease in accuracy
+
+
+#2. Variable Importance from Machine Learning Algorithms
+set.seed(11)
+rPartMod <- train(ecig_craving ~ ., df2, method="rpart")
+rpartImp <- varImp(rPartMod)
+print(rpartImp)
+
+set.seed(111)
+rPartMod2 <- train(ecig_craving ~ ., df3, method="rpart")
+rpartImp2 <- varImp(rPartMod2)
+print(rpartImp2)
+#deleting 
+#R01_AN0090E	
+#R01_AN0010E				
+#R01_AN0085E				
+#R01_AN0055E				
+#R01_AN0050E				
+#R01_AN0020E				
+#R01_AN0065E different ways of asking about e-cig craving 
+
+
+df3_d<- df3%>%
+  select(-c(R01_AN0090E,			
+R01_AN0010E,			
+R01_AN0085E,			
+R01_AN0055E,			
+R01_AN0050E,			
+R01_AN0020E,			
+R01_AN0065E,
+R01_AN0060E,		
+R01_AN0095E,			
+R01_AN0100E,			
+R01_AN0045E,			
+R01_AN0030E,
+R01_AN0015E))
+
+set.seed(222)
+rPartMod3 <- train(ecig_craving ~ ., df3, method="rpart")
+rpartImp3 <- varImp(rPartMod3)
+print(rpartImp3)
+
+## imputed dataframe  
+set.seed(333)
+rPartMod4 <- train(ecig_craving ~ ., df2_imp, method="rpart")
+rpartImp4 <- varImp(rPartMod4)
+print(rpartImp4)
+
+
+# 3.Boruta
+set.seed(11)
+boruta_output <- Boruta(ecig_craving ~ ., data=na.omit(df2), doTrace=2)
+names(boruta_output)
+boruta_signif <- getSelectedAttributes(boruta_output, withTentative = TRUE)
+print(boruta_signif)
+
+set.seed(22)
+boruta_output2 <- Boruta(ecig_craving ~ ., data=na.omit(df2_imp), doTrace=2)
+boruta_signif2 <- getSelectedAttributes(boruta_output2, withTentative = TRUE)
+print(boruta_signif2)
+
+
+imps <- attStats(boruta_output2)
+imps2 = imps[imps$decision != 'Rejected', c('meanImp', 'decision')]
+head(imps2[order(-imps2$meanImp), ])  # descending sort
+
+plot(boruta_output2, cex.axis=.7, las=2, xlab="", main="Variable Importance")
+
+
 
 
 ```
+
+
+### Supervised ML model with imputed data
+```{r}
+
+
+df_dt<- df2_imp_fct %>%
+  select(R01_AC1003,
+  attitude,
+  R01_AE1003,
+  R01_AE1004,
+  R01_AE1022,
+  R01_AE1090,
+  R01_AE1100,
+  R01R_A_AE1006,
+  R01R_A_AE1007,
+  R01R_A_AE1020,
+  R01_AN0015,
+  cig_crave,
+  R01_AN0215,
+  R01_AN0215E,
+  R01_AR0110,
+  R01_AX0005,
+  R01_AX0091,
+  R01_AX0004,
+  R01_AR0144,
+  R01_AX0104,
+  R01_AX0105,
+  current_established_cig_user,
+  current_everyday_cig_user,
+  current_someday_cig_user,
+  current_past30day_cig_user,
+  current_established_ecig_user,
+  current_everyday_ecig_user,
+  current_someday_ecig_user,
+  current_past30day_ecig_user,
+  R01R_A_AGECAT7_IMP,
+  hhincome,
+  R01R_A_SEXORIENT2,
+  R01_AX0064_01,
+  ecig_craving)
+
+set.seed(12345)
+split2 <- initial_split(df_dt, 
+                       prop = 0.7, 
+                       strata = "ecig_craving")
+
+train2<- training(split2)
+test2<- testing(split2)
+
+
+
+#creating a recipe for the supervised machine learning model
+
+
+
+rec2<- 
+  recipe(ecig_craving~  ., data = df_dt) %>%
+  step_dummy(all_nominal_predictors())
+
+
+bake(prep(rec2, train2), new_data = train2)
+
+
+##decision tree 
+
+cart_mod2 <-decision_tree()  %>%
+  set_engine(engine = "rpart") %>%
+  set_mode(mode = "classification")
+
+cart_wf2 <- workflow() %>%
+  add_model(cart_mod2)%>%
+  add_recipe(rec2)
+
+cart_fit2 <- cart_wf2 %>%
+  parsnip::fit( data = train2)
+
+y_predict2 <-predict(cart_fit2, new_data = test2) 
+
+
+rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
+## still the same decision tree 
+```
+
 
 
