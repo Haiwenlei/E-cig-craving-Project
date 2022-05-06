@@ -108,19 +108,19 @@ df1 <- chosen_variable_wave1 %>%
   ))%>%
    mutate(R01R_A_CUR_ESTD_ECIG = case_when(
     R01R_A_CUR_ESTD_ECIG == "(1) 1 = Yes" ~ 1,
-    R01R_A_CUR_ESTD_ECIG == "(2) 2 = No" ~ 2
+    R01R_A_CUR_ESTD_ECIG == "(2) 2 = No" ~ 0
   ))%>%
   mutate(R01R_A_EDY_ECIG = case_when(
     R01R_A_EDY_ECIG == "(1) 1 = Yes" ~ 1,
-    R01R_A_EDY_ECIG == "(2) 2 = No" ~ 2
+    R01R_A_EDY_ECIG == "(2) 2 = No" ~ 0
   ))%>%
   mutate(R01R_A_SDY_ECIG = case_when(
     R01R_A_SDY_ECIG == "(1) 1 = Yes" ~ 1,
-    R01R_A_SDY_ECIG == "(2) 2 = No" ~ 2
+    R01R_A_SDY_ECIG == "(2) 2 = No" ~ 0
   ))%>%
   mutate(R01R_A_P30D_ECIG = case_when(
     R01R_A_P30D_ECIG == "(1) 1 = Yes" ~ 1,
-    R01R_A_P30D_ECIG == "(2) 2 = No" ~ 2
+    R01R_A_P30D_ECIG == "(2) 2 = No" ~ 0
   )) %>%
    mutate(R01R_A_CUR_ESTD_CIGS = if_else(R01R_A_CUR_ESTD_CIGS == "(1) 1 = Yes", 1,0 )) %>%
   mutate(R01R_A_EDY_CIGS = if_else(R01R_A_EDY_CIGS == "(1) 1 = Yes", 1,0 )) %>%
@@ -159,6 +159,75 @@ df1 %>%
   geom_col(aes(x = Race, y = current_established_ecig_user))
 
 
+
+## smoking cigarettes and smoking e-cigarettes   
+df1 %>%
+  ggplot()+
+  geom_col(aes(x = R01_AC1003, y = current_established_ecig_user))
+
+df1 %>%
+  ggplot()+
+  geom_col(aes(x = R01_AC1003, y = current_everyday_ecig_user))
+
+
+
+## ecig craving and cig use 
+df_graph3 <- df1%>%
+  select(ecig_craving, R01_AC1003)%>%
+  mutate(cig_usage = case_when(
+    R01_AC1003 == "(1) 1 = Every day"~ "Every day",
+    R01_AC1003 == "(2) 2 = Some days" ~ "Some days",
+    R01_AC1003 == "(3) 3 = Not at all" ~ "Not at all"
+    ))%>%
+  na.omit()%>%
+  group_by(cig_usage, ecig_craving)%>%
+  summarise(n = n())%>%
+  mutate(freq = n / sum(n))%>%
+  ungroup()
+df_graph3%>%
+  ggplot()+
+  geom_col(aes(x = ecig_craving, y = freq, fill = cig_usage ))
+
+  
+
+#Craving and established e-cig smokers
+df1 %>%
+  ggplot()+
+  geom_col(aes(x =ecig_craving , y= current_established_ecig_user))
+
+df1 %>%
+  ggplot()+
+  geom_bar(aes(x = ecig_craving)) 
+
+
+
+
+## worrying about tobacco damage and e-cig craving 
+df_graph1 <- df1%>%
+  select(R01_AX0004,ecig_craving)%>%
+  mutate(frequent_worrying = case_when(R01_AX0004 == "(5) 5 = Very often" ~ "Very Often",
+                                       R01_AX0004 == "(4) 4 = Often" ~ "Often",
+                                       R01_AX0004 == "(3) 3 = Sometimes" ~ "Sometimes",
+                                       R01_AX0004 == "(2) 2 = Rarely" ~ "Rarely",
+                                       R01_AX0004 == "(1) 1 = Never" ~ "Never"
+                                       ))%>%
+  na.omit()%>%
+  group_by(ecig_craving,frequent_worrying  )%>%
+  summarise(n = n())%>%
+  mutate(freq = n / sum(n))
+df_graph1%>%
+  ggplot(aes(x = ecig_craving, y = freq, color = frequent_worrying))+
+  geom_point()
+
+
+########################################################################
+
+### appendix graphs 
+df1 %>%       
+  ggplot()+
+  geom_col(aes(x = Race, y = current_established_ecig_user))
+
+
 df1 %>% 
   ggplot()+
   geom_col(aes(x = Race, y = current_everyday_ecig_user))
@@ -170,15 +239,6 @@ df1 %>%
 df1 %>%   
   ggplot()+
   geom_col(aes(x = Race, y = current_past30day_ecig_user))
-
-## smoking cigarettes and smoking e-cigarettes   
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_established_ecig_user))
-
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_everyday_ecig_user))
 
 df1 %>% 
   ggplot()+
@@ -199,35 +259,9 @@ df1 %>%
 df1 %>%
   ggplot()+
   geom_col(aes(x = current_someday_ecig_user, y = current_someday_cig_user))
-
-
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = ecig_craving))
-
-#Craving and established e-cig smokers
-df1 %>%
-  ggplot()+
-  geom_col(aes(x =ecig_craving , y= current_established_ecig_user))
-
-df1 %>%
-  ggplot()+
-  geom_bar(aes(x = ecig_craving)) 
-
-
-
-
-
-
-wave2 <- da36498.2001
-
-
-
-
-
 ```
 
-## supervised machine learning 
+### Decision tree 
 ```{r}
 library(vip)
 library(patchwork)
@@ -237,15 +271,7 @@ library(rpart)
 library(rpart.plot)
 library(parsnip)
 library(workflows)
-
 theme_set(theme_minimal())
-
-
-
-
-
-
-##df2$ecig_craving<- as.factor(df2$ecig_craving)
 
 df2<- chosen_variable_wave1%>%
   rename(ecig_craving = R01_AN0025E)%>%
@@ -281,8 +307,6 @@ df3<- wave1_adult%>%
   rename(hhincome = R01R_A_AM0030)%>%
   rename(cig_crave = R01_AN0025)
  
-
-
 set.seed(1234)
 
 split <- initial_split(df2, 
@@ -302,9 +326,6 @@ rec<-
 
 bake(prep(rec, train), new_data = train)
 
-
-##decision tree 
-
 cart_mod <-decision_tree()  %>%
   set_engine(engine = "rpart") %>%
   set_mode(mode = "classification")
@@ -320,7 +341,6 @@ y_predict <-predict(cart_fit, new_data = test)
 
 
 rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
-
 
 
 ```
@@ -344,12 +364,7 @@ df2_imputed<- kNN(df2, k=5)
 df2_imp<- df2_imputed %>%
   select(R01_AC1002: R01R_A_AGECAT7_IMP)
 
-summary(df2_imputed$R01_AE0103)
-summary(df2_imputed$R01_AE0103_imp)
-summary(df2$R01_AE0103)
-summary(df2_imputed$current_established_ecig_user_imp)
-summary(df2_imputed$current_established_ecig_user)
-summary(df2$current_everyday_ecig_user)
+
 
 ```
 
@@ -373,8 +388,8 @@ cf1 <- cforest(ecig_craving ~ . , data= df2, control=cforest_unbiased(mtry=2,ntr
 varimp(cf1)# get variable importance, based on mean decrease in accuracy
 
 #on larger dataframe 
-cf2 <- cforest(ecig_craving ~ . , data= df3, control=cforest_unbiased(mtry=2,ntree=50))
-varimp(cf2)# get variable importance, based on mean decrease in accuracy
+#cf2 <- cforest(ecig_craving ~ . , data= df3, control=cforest_unbiased(mtry=2,ntree=50))
+#varimp(cf2)# get variable importance, based on mean decrease in accuracy
 
 #on imputed dataframe 
 
@@ -456,7 +471,16 @@ plot(boruta_output2, cex.axis=.7, las=2, xlab="", main="Variable Importance")
 
 ### Supervised ML model with imputed data
 ```{r}
+library(vip)
+library(patchwork)
+library(tidyverse)
+library(tidymodels)
+library(rpart)
+library(rpart.plot)
+library(parsnip)
+library(workflows)
 
+theme_set(theme_minimal())
 
 df_dt<- df2_imp_fct %>%
   select(R01_AC1003,
@@ -516,24 +540,13 @@ rec2<-
 bake(prep(rec2, train2), new_data = train2)
 
 
-##decision tree 
-
-cart_mod2 <-decision_tree()  %>%
-  set_engine(engine = "rpart") %>%
-  set_mode(mode = "classification")
-
-cart_wf2 <- workflow() %>%
-  add_model(cart_mod2)%>%
-  add_recipe(rec2)
-
-cart_fit2 <- cart_wf2 %>%
-  parsnip::fit( data = train2)
-
-y_predict2 <-predict(cart_fit2, new_data = test2) 
 
 
-rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
-## still the same decision tree 
+
+
+
+
+###
 ```
 
 
