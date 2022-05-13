@@ -170,6 +170,19 @@ pre code {
 </div>
 
 
+<div id="executive-summary" class="section level3">
+<h3>Executive Summary</h3>
+<p>E-cigarette, defined by National Cancer Institute, is a device that looks like a cigarette, cigar, or pen but doesn’t contain tobacco. Even though e-cigarette has been proven effective for short-term smoke cessation (Dockrell et al., 2013), it perpetuates nicotine addiction more than other Nicotine Replacement Therapy. More importantly, while the identified common correlate of e-cigarette use was a history of cigarette smoking, a notable proportion of people who never smoked cigarettes had ever-used e-cigarettes (Carroll &amp; Wu, 2014). Due to the perpetuation of nicotine and the potential inducement of cigarette use, it is essential to raise awareness and possibly conduct interventions.</p>
+<p>As a result, we are motivated to build a predictive model to predict e-cigarette craving based on the responses to the PATH Study so that those who are interested in awareness promotion and intervention can be more informed. Also, a predictive model gives more leverage to those who want to promote awareness and intervene.</p>
+<p>Dataset we used</p>
+<p>Population Assessment of Tobacco and Health (PATH) Study is a longitudinal study that captures the respondents’ demographic information, tobacco use behavior, attitudes, and beliefs, as well as related health outcomes. We conducted our model building focusing on the first wave.</p>
+<p>Method</p>
+<p>First and foremost, we picked 50 variables out of nearly 2000 based on prior knowledge. Since the response rate of our target question, i.e. rate your e-cigarette craving, is extremely low, we decided to remove those who did not answer the target question. Then, KNN data imputation was used to deal with the missing values for other variables so that we can include as many respondents as possible. After filling our dataset with imputed values, we conducted Brouta (a variant for random forest) and machine learning feature selection because we contemplated that 50 variables are still too much for the predictive model. Results from both feature selections are bound together. Using variables selected by feature selection, we build our random forest as well as lasso predictive model. Lastly, RMSE, precision, and accuracy were used to evaluate the lasso and random forest predictive model.</p>
+<p>Results</p>
+<p>The RMSE of the lasso model is 0.874 while the RMSE of the random forest is 0.886. The accuracy of the random forest is 0.67 while the precision is 0.41. Sensitivity/recall is 0.28. All the results above demonstrate that we generated a model with medium predictive power. Reasons why the model is not perfect are discussed in the limitation section.</p>
+<p>Limitation</p>
+<p>The predictive model could have performed better if the response rate was higher. A significant non-response rate could jeopardize the model not only because of the missing value bias but also due to the fact that imputation has to be used to make up for the non-response rate. Furthermore, the predictive model could have been better if the process of manually picking the variables was conducted by someone with even more prior knowledge than us. It was possible to miss the variables that were more crucial.</p>
+</div>
 <div id="load-the-data-set" class="section level3">
 <h3>load the data set</h3>
 <pre class="r"><code>load(&quot;D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1001-Data.rda&quot;)
