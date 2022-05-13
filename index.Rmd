@@ -1,6 +1,7 @@
 ---
 title: "E-cig craving project"
 output: html_document
+author: Haiwen Lei & Xiaohan Zhang
 ---
 
 ```{r setup, include=FALSE}
@@ -17,12 +18,8 @@ load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-1002-Data.rda")
 load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-2001-Data.rda")
 load("D:/DATA SCIENCE PROJECT/E-cig-craving-Project/data/36498-3001-Data.rda")
 ```
-R01_AN0015E, ## Has strong cravings to use e-cigarettes (for dual and poly users of tobacco who use e-cigarettes) 
-  mutate(R01_AN0015E = case_when(
-    R01_AN0015E == "(1) 1 = Yes" ~ 1,
-    R01_AN0015E == "(2) 2 = No" ~ 2
-  ))%>%
-  
+
+
 ```{r}
 library(tidyverse)
 library(ggplot2)
@@ -30,7 +27,8 @@ wave1_adult <- da36498.1001
 wave1_youth_parent <- da36498.1002
 
 
-#select variables and data cleaning 
+#select variables and data cleaning, the variables are chosen based on the group's knowledge of the subject. 
+#We looked into the code book and questionnaire for the vairable selection. 
 
 chosen_variable_wave1<- wave1_adult %>%
   select( 
@@ -90,10 +88,7 @@ chosen_variable_wave1<- wave1_adult %>%
 
 
 
- 
-
- 
-
+######### Exploratory data analysis via data visualization
 
 
 
@@ -135,7 +130,8 @@ df1 <- chosen_variable_wave1 %>%
   rename(current_established_cig_user = R01R_A_CUR_ESTD_CIGS) %>%
   rename(current_everyday_cig_user = R01R_A_EDY_CIGS) %>%
   rename(current_someday_cig_user = R01R_A_SDY_CIGS) %>%
-  rename(current_past30day_cig_user = R01R_A_P30D_CIGS) 
+  rename(current_past30day_cig_user = R01R_A_P30D_CIGS)%>%
+  rename(smooking_cigarettes = R01_AC1003)
 
 
    
@@ -144,40 +140,30 @@ df1 <- chosen_variable_wave1 %>%
 #race distribution   
 df1 %>%
   ggplot()+
-  geom_bar(aes(x = Race))
+  geom_bar(aes(x = Race))+
+  labs(title = "race distribution")
 
 df1 %>%
   ggplot(aes(Race)) +
   geom_bar(aes(y = (..count..)/sum(..count..)))+
   scale_y_continuous(labels=scales::percent) +
-          ylab("relative frequencies")
+          ylab("relative frequencies")+
+  labs(title = "race distribution")
 
 
 
 df1 %>%       
   ggplot()+
-  geom_col(aes(x = Race, y = current_established_ecig_user))
-
-
-
-## smoking cigarettes and smoking e-cigarettes   
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_established_ecig_user))
-
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_everyday_ecig_user))
-
-
+  geom_col(aes(x = Race, y = current_established_ecig_user))+
+  labs(title = "race distribution and current e-cig users")
 
 ## ecig craving and cig use 
 df_graph3 <- df1%>%
-  select(ecig_craving, R01_AC1003)%>%
+  select(ecig_craving, smooking_cigarettes)%>%
   mutate(cig_usage = case_when(
-    R01_AC1003 == "(1) 1 = Every day"~ "Every day",
-    R01_AC1003 == "(2) 2 = Some days" ~ "Some days",
-    R01_AC1003 == "(3) 3 = Not at all" ~ "Not at all"
+    smooking_cigarettes == "(1) 1 = Every day"~ "Every day",
+    smooking_cigarettes == "(2) 2 = Some days" ~ "Some days",
+    smooking_cigarettes == "(3) 3 = Not at all" ~ "Not at all"
     ))%>%
   na.omit()%>%
   group_by(cig_usage, ecig_craving)%>%
@@ -186,18 +172,33 @@ df_graph3 <- df1%>%
   ungroup()
 df_graph3%>%
   ggplot()+
-  geom_col(aes(x = ecig_craving, y = freq, fill = cig_usage ))
+  geom_col(aes(x = ecig_craving, y = freq, fill = cig_usage ))+
+  labs(title = "ecig craving and cig use")
 
-  
+
+
+## smoking cigarettes and smoking e-cigarettes   
+df1 %>%
+  ggplot()+
+  geom_col(aes(x = smooking_cigarettes, y = current_established_ecig_user))+
+  labs(title = "smoking cigarettes and smoking e-cigarettes ")
+
+df1 %>%
+  ggplot()+
+  geom_col(aes(x = smooking_cigarettes, y = current_everyday_ecig_user))+
+  labs(title = "smoking cigarettes and smoking e-cigarettes ")
+
 
 #Craving and established e-cig smokers
 df1 %>%
   ggplot()+
-  geom_col(aes(x =ecig_craving , y= current_established_ecig_user))
+  geom_col(aes(x =ecig_craving , y= current_established_ecig_user))+
+  labs(title = "Craving and established e-cig smokers")
 
 df1 %>%
   ggplot()+
-  geom_bar(aes(x = ecig_craving)) 
+  geom_bar(aes(x = ecig_craving))+
+  labs(title = "Craving and established e-cig smokers") 
 
 
 
@@ -215,9 +216,11 @@ df_graph1 <- df1%>%
   group_by(ecig_craving,frequent_worrying  )%>%
   summarise(n = n())%>%
   mutate(freq = n / sum(n))
+
 df_graph1%>%
   ggplot(aes(x = ecig_craving, y = freq, color = frequent_worrying))+
-  geom_point()
+  geom_point()+
+  labs(title = "worrying about tobacco damage and e-cig craving" )
 
 
 ########################################################################
@@ -240,13 +243,6 @@ df1 %>%
   ggplot()+
   geom_col(aes(x = Race, y = current_past30day_ecig_user))
 
-df1 %>% 
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_someday_ecig_user))
-
-df1 %>%
-  ggplot()+
-  geom_col(aes(x = R01_AC1003, y = current_past30day_ecig_user))
 
 df1 %>%
   ggplot()+
@@ -262,6 +258,7 @@ df1 %>%
 ```
 
 ### Decision tree 
+The decision tree is based on the 50 chosen variables with our subject of knowledge. 
 ```{r}
 library(vip)
 library(patchwork)
@@ -273,6 +270,7 @@ library(parsnip)
 library(workflows)
 theme_set(theme_minimal())
 
+## We dropped the observations that didn't answer the question for outcome variable(ecig_craving).  
 df2<- chosen_variable_wave1%>%
   rename(ecig_craving = R01_AN0025E)%>%
   drop_na(ecig_craving)%>%
@@ -344,8 +342,11 @@ rpart.plot(x = cart_fit$fit$fit$fit,fallen.leaves=FALSE, tweak=1.2)
 
 
 ```
+Decision tree have shown that being a everyday e-cigarette  and cigarette users tends to report e-cig craving. 
+other variables deciding e-cig craving score include BMI, attitude towards smoking cigarette, wheter crave cigarette, and household income. 
 
 ### data imputation for missing values
+We found many observations have missing values for prediction variables. We used the KNN machine learning method to impute the missing values. 
 ```{r}
 library(tidymodels)
 library(VIM)
@@ -368,8 +369,11 @@ df2_imp<- df2_imputed %>%
 
 ```
 
-### Feature selection 
+### Feature selection
+Three methods were used to select variables based on their importance. Before that, we conducted feature selection on original data frame to prove our knowledge of subject.Except for variables that are similar to e-cig craving score(we dropped them because they are not conducive for predicting ecig-craving), we found our chosen variables matches with feature selection. 
+Then, we did feature selection on our imputed data frame.Three methods were used: random forest, machine learning algorithm, and boruta(another random forest method).After that, we targeted around 30 variables.    
 ```{r}
+
 library(Boruta) #a feature ranking and selection algorithm based on random forests algorithm
 library(caret)
 library(party)
@@ -470,6 +474,8 @@ plot(boruta_output2, cex.axis=.7, las=2, xlab="", main="Variable Importance")
 
 
 ### Supervised ML model with imputed data
+We constructed supervised ML model with imputed data and used the models to predict e-cig craving.
+Two models were used random forest and lasso regression.We used the factor data frame for Random forest with classification mode. We also converted the factor df to numeric df for regression models(second random forest and lasso regression).   
 ```{r}
 library(vip)
 library(patchwork)
@@ -479,6 +485,8 @@ library(rpart)
 library(rpart.plot)
 library(parsnip)
 library(workflows)
+library(ranger)
+library(yardstick)
 
 theme_set(theme_minimal())
 
@@ -518,6 +526,44 @@ df_dt<- df2_imp_fct %>%
   R01_AX0064_01,
   ecig_craving)
 
+
+df_dt2<- df2_imp %>%
+  select(R01_AC1003,
+  attitude,
+  R01_AE1003,
+  R01_AE1004,
+  R01_AE1022,
+  R01_AE1090,
+  R01_AE1100,
+  R01R_A_AE1006,
+  R01R_A_AE1007,
+  R01R_A_AE1020,
+  R01_AN0015,
+  cig_crave,
+  R01_AN0215,
+  R01_AN0215E,
+  R01_AR0110,
+  R01_AX0005,
+  R01_AX0091,
+  R01_AX0004,
+  R01_AR0144,
+  R01_AX0104,
+  R01_AX0105,
+  current_established_cig_user,
+  current_everyday_cig_user,
+  current_someday_cig_user,
+  current_past30day_cig_user,
+  current_established_ecig_user,
+  current_everyday_ecig_user,
+  current_someday_ecig_user,
+  current_past30day_ecig_user,
+  R01R_A_AGECAT7_IMP,
+  hhincome,
+  R01R_A_SEXORIENT2,
+  R01_AX0064_01,
+  ecig_craving)
+
+
 set.seed(12345)
 split2 <- initial_split(df_dt, 
                        prop = 0.7, 
@@ -535,19 +581,275 @@ test2<- testing(split2)
 rec2<- 
   recipe(ecig_craving~  ., data = df_dt) %>%
   step_dummy(all_nominal_predictors())
+  
 
+folds <- vfold_cv(data = train2, v = 10, repeats = 1)
 
 bake(prep(rec2, train2), new_data = train2)
 
 
+# Random forest classification 
+
+rand_fore <-rand_forest(trees = 1000) %>% 
+  set_engine("ranger") %>% 
+  set_mode("classification")
+
+rand_wf <- workflow() %>%
+  add_recipe(rec2) %>%
+  add_model(rand_fore) 
+ 
+rand_cv <- rand_wf %>%
+ tune_grid(grid = 10,
+            control = control_grid(save_pred = TRUE),
+           resamples = folds)
+
+
+rand_rmse<- rand_cv %>%
+  collect_metrics(summarize = TRUE)
+
+rand_rmse %>%
+  ggplot(aes(x= .config, y= mean))+
+  geom_point()
+
+rand_fit <- rand_wf%>%
+  parsnip::fit(train2)
+
+best_model_rmse <- bind_cols(
+  test2,
+  predict(object = rand_fit, new_data = test2)
+) 
 
 
 
+yardstick::accuracy(data =best_model_rmse,
+                    truth = ecig_craving,
+                    estimate = .pred_class)
+
+yardstick::precision(data = best_model_rmse,
+         truth = ecig_craving,
+         estimate = .pred_class)
+
+yardstick::sensitivity(data = best_model_rmse,
+         truth = ecig_craving,
+         estimate = .pred_class)
+
+yardstick::recall(data = best_model_rmse,
+         truth = ecig_craving,
+         estimate = .pred_class)
+
+conf_mat(data = best_model_rmse,
+         truth = ecig_craving,
+         estimate = .pred_class)
+
+## converting to numeric 
+
+ best_model_rmse[sapply(best_model_rmse, is.factor)] <- lapply(best_model_rmse[sapply(best_model_rmse, is.factor)],as.numeric)
+ 
+ rmse(data = best_model_rmse, truth = ecig_craving, estimate = .pred_class )
 
 
+## regression model  
 
-###
+set.seed(123456)
+split3 <- initial_split(df_dt2, 
+                       prop = 0.7, 
+                       strata = "ecig_craving")
+
+train3<- training(split3)
+test3<- testing(split3)
+
+
+rec3<- 
+  recipe(ecig_craving~  ., data = df_dt2) %>%
+  step_dummy(all_nominal_predictors())
+  
+
+folds2 <- vfold_cv(data = train3, v = 10, repeats = 1)
+
+############### randome forest
+
+rand_fore2 <-rand_forest(trees = 1000) %>% 
+  set_engine("ranger") %>% 
+  set_mode("regression")
+
+rand_wf2 <- workflow() %>%
+  add_recipe(rec3) %>%
+  add_model(rand_fore2) 
+ 
+rand_cv2 <- rand_wf2 %>%
+ tune_grid(grid = 10,
+            control = control_grid(save_pred = TRUE),
+           metrics = metric_set(mae, rmse),
+           resamples = folds2)
+
+
+rand_rmse2<- rand_cv2 %>%
+  collect_metrics(summarize = TRUE)
+
+rand_rmse2 %>%
+   ggplot(aes(x= .config, y= mean, color = .metric))+
+  geom_point()
+
+rand_fit2 <- rand_wf2%>%
+  parsnip::fit(train3)
+
+best_model_rmse2 <- bind_cols(
+  test3,
+  predict(object = rand_fit2, new_data = test3)
+) 
+
+
+rmse(data = best_model_rmse2, truth = ecig_craving, estimate = .pred)
+mae(data = best_model_rmse2, truth = ecig_craving, estimate = .pred)
+
+########### lasso 
+# lasso
+
+lasso_grid <- grid_regular(penalty(), levels = 10)
+
+lasso_mod <- linear_reg(
+  penalty = tune(), 
+  mixture = 1
+) %>%
+  set_engine("glmnet")
+
+lasso_wf <- workflow() %>%
+  add_recipe(rec3) %>%
+  add_model(lasso_mod) 
+
+lasso_cv <- lasso_wf %>%
+  tune_grid(
+    resamples = folds2,
+    grid = lasso_grid,
+    metrics = metric_set(mae, rmse)
+  )
+
+lasso_rmse<- lasso_cv %>% 
+  collect_metrics(summarize = TRUE)
+
+lasso_cv %>% 
+  show_best(metric = "rmse", n = 1)
+
+lasso_best <- lasso_cv %>%
+  select_best(metric = "rmse")
+
+lasso_final <- finalize_workflow(
+  lasso_wf,
+  parameters = lasso_best
+)
+
+lasso_fit<- lasso_final%>%
+  parsnip::fit(data = train3)
+
+lasso_coefs <- lasso_final %>%
+  parsnip::fit(data = train3) %>%
+  extract_fit_parsnip() %>%
+  vi(lambda = lasso_best$penalty) 
+
+print(lasso_coefs) #this tells us the coefficients of each variable and their magnitude
+
+lasso_rmse %>%
+  ggplot(aes(x= .config, y= mean, color = .metric))+
+  geom_point()
+
+best_model_rmse3 <- bind_cols(
+  test3,
+  predict(object = lasso_fit, new_data = test3)
+) 
+
+rmse(data = best_model_rmse3, truth = ecig_craving, estimate = .pred)
+mae(data = best_model_rmse3, truth = ecig_craving, estimate = .pred)
+
+
 ```
+lasso and random forest model have similar rmse about 0.87 and 0.88. 
+
+
+### Extension- cluster analysis
+clusters among the people who crave e-cig. 
+```{r}
+library(factoextra)
+library(patchwork)
+
+
+
+
+
+
+
+set.seed(20220412)
+
+# total within sum of squares
+fviz_nbclust(df_dt2, FUN = kmeans, method = "wss")
+
+# total silhouette width
+fviz_nbclust(df_dt2, FUN = kmeans, method = "silhouette")
+
+# gap statistic
+fviz_nbclust(df_dt2, FUN = kmeans, method = "gap_stat")
+
+## 2 or 8 clusters 
+
+#### creating PCA
+pca<- prcomp(df_dt2)
+summary(pca)
+
+pcs <- pca %>%
+.$x %>%
+  as_tibble()
+######
+
+pcs <-bind_cols(
+  select(pcs, PC1, PC2),
+  df_dt2)
+
+  kmeans<- kmeans(
+   df_dt2,
+   centers = 2)
+  
+ cluster<- bind_cols(
+    pcs,
+    cluster = kmeans$cluster
+  )
+  
+  ggplot() +
+  geom_point(
+    data = cluster,
+     mapping = aes(x = PC1, y = PC2, color = factor(cluster))) +
+    labs(
+      title = "K-Means with 2 and PCA") 
+
+# 8 clusters  
+  
+pca<- prcomp(df_dt2)
+summary(pca)
+
+pcs <- pca %>%
+.$x %>%
+  as_tibble()  
+  
+pcs2 <-bind_cols(
+  select(pcs, PC1, PC2, PC3, PC4, PC5, PC6, PC7, PC8),
+  df_dt2)
+
+  kmeans2<- kmeans(
+   df_dt2,
+   centers = 8)
+  
+ cluster2 <- bind_cols(
+    pcs,
+    cluster = kmeans2$cluster
+  )
+  
+  ggplot() +
+  geom_point(
+    data = cluster2,
+     mapping = aes(x = PC1, y = PC2, color = factor(cluster))) +
+    labs(
+      title = "K-Means with 2 and PCA") 
+
+```
+
 
 
 
